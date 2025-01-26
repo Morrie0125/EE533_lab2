@@ -1,0 +1,47 @@
+`timescale 1ns/1ps
+
+module extendedaddertest;
+
+// Declare test signals
+reg  [31:0] a = 32'b0;
+reg  [31:0] b = 32'b0;
+reg         ci = 1'b0;
+wire [31:0] z;
+
+// Instantiate the extended adder module
+extendedadder UUT (
+    .a  (a),
+    .b  (b),
+    .ci (ci),
+    .z  (z)
+);
+
+// Main stimulus
+initial begin
+    // ---------------- Current Time: 185 ns
+    #185;
+    a = 32'b0000_00000000_00010011_01001110; 
+    b = 32'b0000_00000000_00000000_00000100;
+
+    // ---------------- Current Time: 385 ns
+    #200;
+    a = 32'b00000000000000010001000100010001;
+    b = 32'b00000000000000000001000100010001;
+
+    // ---------------- Current Time: 585 ns
+    #200;
+    ci = 1'b1;
+    a  = 32'b01010101010101010101010101010101;
+    b  = 32'b00010010010011010010011010011100;
+
+    // ---------------- Current Time: 785 ns
+    #200;
+    a = 32'b00000000000000010101010101011000;
+    b = 32'b00000000000000000000000100010001;
+
+    // Add more patterns if needed, then eventually finish
+    #200;
+    $finish;
+end
+
+endmodule
