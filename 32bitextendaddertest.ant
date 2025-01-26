@@ -1,0 +1,88 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2003 Xilinx, Inc.
+// All Right Reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1
+//  \   \         Application : ISE
+//  /   /         Filename : extendaddertest.ant
+// /___/   /\     Timestamp : Fri Jan 24 00:27:14 2025
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: 
+//Design Name: extendaddertest
+//Device: Xilinx
+//
+`timescale 1ns/1ps
+
+module extendaddertest;
+    reg [31:0] a = 32'b00000000000000000000000000000000;
+    reg [31:0] b = 32'b00000000000000000000000000000000;
+    reg ci = 1'b0;
+    wire [31:0] z;
+
+
+    extendadder UUT (
+        .a(a),
+        .b(b),
+        .ci(ci),
+        .z(z));
+
+    integer TX_FILE = 0;
+    integer TX_ERROR = 0;
+    
+    initial begin    // Annotation process
+        #0;
+        ANNOTATE_z;
+        forever begin
+            #1.66072e+010;
+            ANNOTATE_z;
+            #2.13924e+010;
+        end
+    end
+
+    initial begin  // Open the annotations file...
+        TX_FILE = $fopen("C:\\Documents and Settings\\student\\fulladder\\extendaddertest.ano");
+        #1000 // Final time:  1000 ns
+        $display("Success! Annotation Simulation Complete.");
+        $fdisplay(TX_FILE, "Total[%d]", TX_ERROR);
+        $fclose(TX_FILE);
+        $finish;
+    end
+
+    initial begin
+        // -------------  Current Time:  185ns
+        #185;
+        a = 32'b00000000000000001010101111001100;
+        b = 32'b00000000000000000000000000000100;
+        // -------------------------------------
+        // -------------  Current Time:  385ns
+        #200;
+        a = 32'b00000000000000000001000100010001;
+        b = 32'b00000000000000000010001000100010;
+        // -------------------------------------
+        // -------------  Current Time:  585ns
+        #200;
+        ci = 1'b1;
+        a = 32'b10101010101010101010101010101010;
+        b = 32'b00010001000100100010001000100010;
+        // -------------------------------------
+        // -------------  Current Time:  785ns
+        #200;
+        a = 32'b00000000000000001010101111001100;
+        b = 32'b00000000000000000000000000011000;
+    end
+
+    task ANNOTATE_z;
+        #0 begin
+            $fdisplay(TX_FILE, "Annotate[%d,z,%b]", $time, z);
+            $fflush(TX_FILE);
+            TX_ERROR = TX_ERROR + 1;
+        end
+    endtask
+
+endmodule
+

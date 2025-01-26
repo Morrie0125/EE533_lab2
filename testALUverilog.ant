@@ -1,0 +1,88 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 1995-2003 Xilinx, Inc.
+// All Right Reserved.
+////////////////////////////////////////////////////////////////////////////////
+//   ____  ____ 
+//  /   /\/   / 
+// /___/  \  /    Vendor: Xilinx 
+// \   \   \/     Version : 10.1
+//  \   \         Application : ISE
+//  /   /         Filename : testALUverilog.ant
+// /___/   /\     Timestamp : Fri Jan 24 17:49:43 2025
+// \   \  /  \ 
+//  \___\/\___\ 
+//
+//Command: 
+//Design Name: testALUverilog
+//Device: Xilinx
+//
+`timescale 1ns/1ps
+
+module testALUverilog;
+    reg [31:0] x = 32'b00000000000000000000000000000000;
+    reg [31:0] y = 32'b00000000000000000000000000000000;
+    reg [2:0] sel = 3'b000;
+    wire [31:0] z;
+
+
+    ALUverilog UUT (
+        .x(x),
+        .y(y),
+        .sel(sel),
+        .z(z));
+
+    integer TX_FILE = 0;
+    integer TX_ERROR = 0;
+    
+    initial begin    // Annotation process
+        #0;
+        ANNOTATE_z;
+        forever begin
+            #50;
+            ANNOTATE_z;
+            #50;
+        end
+    end
+
+    initial begin  // Open the annotations file...
+        TX_FILE = $fopen("C:\\Documents and Settings\\student\\fulladder\\testALUverilog.ano");
+        #1000 // Final time:  1000 ns
+        $display("Success! Annotation Simulation Complete.");
+        $fdisplay(TX_FILE, "Total[%d]", TX_ERROR);
+        $fclose(TX_FILE);
+        $finish;
+    end
+
+    initial begin
+        // -------------  Current Time:  100ns
+        #100;
+        x = 32'b00010010001101000101011001111000;
+        y = 32'b00010001000100010001000100010001;
+        // -------------------------------------
+        // -------------  Current Time:  300ns
+        #200;
+        sel = 3'b001;
+        // -------------------------------------
+        // -------------  Current Time:  500ns
+        #200;
+        sel = 3'b010;
+        // -------------------------------------
+        // -------------  Current Time:  700ns
+        #200;
+        sel = 3'b011;
+        // -------------------------------------
+        // -------------  Current Time:  900ns
+        #200;
+        sel = 3'b100;
+    end
+
+    task ANNOTATE_z;
+        #0 begin
+            $fdisplay(TX_FILE, "Annotate[%d,z,%b]", $time, z);
+            $fflush(TX_FILE);
+            TX_ERROR = TX_ERROR + 1;
+        end
+    endtask
+
+endmodule
+
