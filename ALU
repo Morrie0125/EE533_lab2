@@ -1,0 +1,19 @@
+module alu (
+    input  [31:0] x,
+    input  [31:0] y,
+    input  [2:0]  sel,
+    output reg [31:0] z
+);
+
+always @(*) begin
+    case (sel)
+        3'd0: z = x + y;    // 加法
+        3'd1: z = x - y;    // 減法
+        3'd2: z = x & y;    // AND
+        3'd3: z = x | y;    // OR
+        3'd4: z = x >> 1;   // 右移 1 bit
+        default: z = 32'd0; // 預設輸出 0
+    endcase
+end
+
+endmodule
